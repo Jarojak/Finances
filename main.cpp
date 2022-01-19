@@ -35,22 +35,16 @@ int main(){
             switch (finances.getChoice())
             {
             case '1':
-                //finances.dodajAdresata();
                 break;
             case '2':
-                //finances.wyszukajAdresatowPoImieniu();
                 break;
             case '3':
-                //finances.wyszukajAdresatowPoNazwisku();
                 break;
             case '4':
-                //finances.wyswietlWszystkichAdresatow();
                 break;
             case '5':
-                //finances.usunAdresata();
                 break;
             case '6':
-                //finances.edytujAdresata();
                 break;
             case '7':
                 finances.changePassword();
