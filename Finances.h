@@ -4,26 +4,26 @@
 #include <iostream>
 
 #include "UserManager.h"
-//#include "AdresatMenedzer.h"
+#include "IncomesManager.h"
 
 using namespace std;
 
 class Finances{
     UserManager userManager;
-    //AdresatMenedzer *adresatMenedzer;
-    //const string NAZWA_PLIKU_Z_ADRESATAMI;
+    IncomesManager *incomesManager;
+    const string FILENAME_WITH_INCOMES;
     char choice;
 public:
-    Finances(string filenameWithUsers) :
-        userManager(filenameWithUsers)
-      //  NAZWA_PLIKU_Z_ADRESATAMI(nazwaPlikuZAdresatami)
+    Finances(string filenameWithUsers, string filenameWithIncomes) :
+        userManager(filenameWithUsers),
+        FILENAME_WITH_INCOMES(filenameWithIncomes)
     {
-        //adresatMenedzer = NULL;
+        incomesManager = NULL;
     };
     ~Finances()
     {
-      //delete adresatMenedzer;
-      //adresatMenedzer = NULL;
+        delete incomesManager;
+        incomesManager = NULL;
     };
     void registerUser();
     void displayAllUsers();
@@ -32,8 +32,8 @@ public:
     void changePassword();
     int isUserLoggedIn();
     int getLoggedInUserId();
-    //void dodajAdresata();
-    //void wyswietlWszystkichAdresatow();
+    void addTransaction();
+    void currentMonthBalance();
     //void usunAdresata();
     //void edytujAdresata();
     //void wyszukajAdresatowPoImieniu();

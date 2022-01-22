@@ -13,18 +13,17 @@ void Finances::displayAllUsers()
 void Finances::loginUser()
 {
     userManager.loginUser();
-//    if (uzytkownikMenedzer.czyUzytkownikJestZalogowany()){
-//        adresatMenedzer = new AdresatMenedzer(NAZWA_PLIKU_Z_ADRESATAMI,uzytkownikMenedzer.pobierzIdZalogowanegoUzytkownika());
-//    }
-
+    if (userManager.isUserLoggedIn()){
+        incomesManager = new IncomesManager(FILENAME_WITH_INCOMES,userManager.getLoggedInUserId());
+    }
 }
 
 void Finances::logoutUser()
 {
     userManager.logoutUser();
-    //adresatMenedzer->wyczyscDaneZWektoraUzytkownicy();
-    //delete adresatMenedzer;
-    //adresatMenedzer = NULL;
+    incomesManager->deleteIncomes();
+    delete incomesManager;
+    incomesManager = NULL;
 }
 
 void Finances::changePassword()
@@ -37,25 +36,26 @@ int Finances::getLoggedInUserId()
     return userManager.getLoggedInUserId();
 }
 
-/*
-void Finances::dodajAdresata()
+
+void Finances::addTransaction()
 {
-    if(uzytkownikMenedzer.czyUzytkownikJestZalogowany())
+    if(userManager.isUserLoggedIn())
     {
-        adresatMenedzer->dodajAdresata();
+        incomesManager->addTransaction();
     }
     else
     {
-        cout << "Aby dodac adresata, nalezy najpierw sie zalogowac" << endl;
+        cout << "Aby dodac przychod, nalezy najpierw sie zalogowac" << endl;
         system("pause");
     }
 }
 
-void Finances::wyswietlWszystkichAdresatow()
-{
-    adresatMenedzer->wyswietlWszystkichAdresatow();
-}
 
+void Finances::currentMonthBalance()
+{
+    incomesManager->currentMonthBalance();
+}
+/*
 void Finances::usunAdresata()
 {
     adresatMenedzer->usunAdresata();
@@ -95,9 +95,9 @@ void Finances::selectOptionFromUserMenu()
     system("cls");
     cout << " >>> MENU UZYTKOWNIKA <<<" << endl;
     cout << "---------------------------" << endl;
-    cout << "1. " << endl;
+    cout << "1. Dodaj przychod" << endl;
     cout << "2. " << endl;
-    cout << "3. " << endl;
+    cout << "3. Bilans z biezacego miesiaca" << endl;
     cout << "4. " << endl;
     cout << "5. " << endl;
     cout << "6. " << endl;

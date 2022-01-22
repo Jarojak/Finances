@@ -3,4 +3,4 @@ obj/
 temp/
 Finances.cbp
 Finances.depend
-users.xml
+*.xml

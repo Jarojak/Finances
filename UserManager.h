@@ -15,6 +15,9 @@ using namespace std;
 class UserManager{
 private:
     int loggedInUserId;
+    double incomesAmount;
+    double outcomesAmount;
+    double balanceAmount;
     vector <User> users;
     FileWithUsers fileWithUsers;
 
