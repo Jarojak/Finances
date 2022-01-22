@@ -16,6 +16,7 @@ class IncomesManager
 {
     const int LOGGED_IN_USER_ID;
     int currentDate;
+    double incomeBalance;
     vector <Income> incomes;
     FileWithIncomes fileWithIncomes;
 
@@ -34,6 +35,7 @@ public:
     void lastMonthBalance();
     void selectedDatesBalance();
     void deleteIncomes();
+    double getIncomeBalance();
 };
 
 #endif // ADRESATMENEDZER_H

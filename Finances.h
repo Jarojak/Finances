@@ -34,8 +34,8 @@ public:
     int getLoggedInUserId();
     void addTransaction();
     void currentMonthBalance();
-    //void usunAdresata();
-    //void edytujAdresata();
+    void lastMonthBalance();
+    void selectedDatesBalance();
     //void wyszukajAdresatowPoImieniu();
     //void wyszukajAdresatowPoNazwisku();
     void selectOptionFromMainMenu();

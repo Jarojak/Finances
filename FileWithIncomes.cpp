@@ -12,10 +12,12 @@ void FileWithIncomes::addTransactionToFile(Income income)
     xml.AddElem( "UserId", income.getUserId());
     xml.AddElem( "Date" , income.getDate());
     xml.AddElem( "Item" , income.getItem());
-    xml.AddElem( "Amount" , income.getAmount());
+    xml.AddElem( "Amount" , AuxiliaryMethods::DoubleToStr(income.getAmount()));
     xml.OutOfElem();
 
     xml.Save( getFileName().c_str() );
+
+    lastTransactionId = income.getId();
 }
 
 vector <Income> FileWithIncomes::loadTransactionsOfLoggedInUserFromXMLFile(int loggedUserId)

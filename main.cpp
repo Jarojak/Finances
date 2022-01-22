@@ -43,8 +43,10 @@ int main(){
                 finances.currentMonthBalance();
                 break;
             case '4':
+                finances.lastMonthBalance();
                 break;
             case '5':
+                finances.selectedDatesBalance();
                 break;
             case '6':
                 break;

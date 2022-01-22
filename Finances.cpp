@@ -54,18 +54,33 @@ void Finances::addTransaction()
 void Finances::currentMonthBalance()
 {
     incomesManager->currentMonthBalance();
+    cout << "Bilans przychodow w biezacym miesiacu: ";
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),2);
+    cout << incomesManager->getIncomeBalance() << endl;
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),7);
+    system("pause");
+}
+
+void Finances::lastMonthBalance()
+{
+    incomesManager->lastMonthBalance();
+    cout << "Bilans przychodow w poprzednim miesiacu: ";
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),2);
+    cout << incomesManager->getIncomeBalance() << endl;
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),7);
+    system("pause");
+}
+
+void Finances::selectedDatesBalance()
+{
+    incomesManager->selectedDatesBalance();
+    cout << "Bilans przychodow w wybranym okresie: ";
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),2);
+    cout << incomesManager->getIncomeBalance() << endl;
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),7);
+    system("pause");
 }
 /*
-void Finances::usunAdresata()
-{
-    adresatMenedzer->usunAdresata();
-}
-
-void Finances::edytujAdresata()
-{
-    adresatMenedzer->edytujAdresata();
-}
-
 void Finances::wyszukajAdresatowPoImieniu()
 {
     adresatMenedzer->wyszukajAdresatowPoImieniu();
@@ -98,8 +113,8 @@ void Finances::selectOptionFromUserMenu()
     cout << "1. Dodaj przychod" << endl;
     cout << "2. " << endl;
     cout << "3. Bilans z biezacego miesiaca" << endl;
-    cout << "4. " << endl;
-    cout << "5. " << endl;
+    cout << "4. Bilans z poprzedniego miesiaca" << endl;
+    cout << "5. Bilans z wybranego okresu" << endl;
     cout << "6. " << endl;
     cout << "---------------------------" << endl;
     cout << "7. Zmien haslo" << endl;
