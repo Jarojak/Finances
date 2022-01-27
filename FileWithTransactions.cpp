@@ -75,8 +75,6 @@ vector <Transaction> FileWithTransactions::loadTransactionsOfLoggedInUserFromXML
         lastTransactionId = 0;
     }
 
-    sort(transactions.begin(),transactions.end());
-
     return transactions;
 }
 

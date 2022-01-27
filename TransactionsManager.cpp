@@ -97,6 +97,9 @@ void TransactionsManager::currentMonthBalance()
 
     if (!incomes.empty() || !outcomes.empty())
     {
+        if(!incomes.empty()) sort(incomes.begin(),incomes.end());
+        if(!outcomes.empty()) sort(outcomes.begin(),outcomes.end());
+
         cout << "      >>> Bilans przychodow z biezacego miesiaca <<<" << endl;
         cout << "-----------------------------------------------" << endl;
 
@@ -150,6 +153,9 @@ void TransactionsManager::lastMonthBalance()
     system("cls");
     if (!incomes.empty() || !outcomes.empty())
     {
+        if(!incomes.empty()) sort(incomes.begin(),incomes.end());
+        if(!outcomes.empty()) sort(outcomes.begin(),outcomes.end());
+
         cout << "      >>> Bilans przychodow z poprzedniego miesiaca <<<" << endl;
         cout << "-----------------------------------------------" << endl;
 
@@ -221,6 +227,9 @@ void TransactionsManager::selectedDatesBalance()
     system("cls");
     if (!incomes.empty() || !outcomes.empty())
     {
+        if(!incomes.empty()) sort(incomes.begin(),incomes.end());
+        if(!outcomes.empty()) sort(outcomes.begin(),outcomes.end());
+
         string date;
         bool dateValidation = false;
         cout << "wpisz date, (od) w formacie YYYY-MM-DD" << endl;
