@@ -4,26 +4,29 @@
 #include <iostream>
 
 #include "UserManager.h"
-#include "IncomesManager.h"
+#include "TransactionsManager.h"
 
 using namespace std;
 
 class Finances{
     UserManager userManager;
-    IncomesManager *incomesManager;
+    TransactionsManager *transactionsManager;
     const string FILENAME_WITH_INCOMES;
+    const string FILENAME_WITH_OUTCOMES;
     char choice;
+    double balance;
 public:
-    Finances(string filenameWithUsers, string filenameWithIncomes) :
+    Finances(string filenameWithUsers, string filenameWithIncomes, string filenameWithOutcomes) :
         userManager(filenameWithUsers),
-        FILENAME_WITH_INCOMES(filenameWithIncomes)
+        FILENAME_WITH_INCOMES(filenameWithIncomes),
+        FILENAME_WITH_OUTCOMES(filenameWithOutcomes)
     {
-        incomesManager = NULL;
+        transactionsManager = NULL;
     };
     ~Finances()
     {
-        delete incomesManager;
-        incomesManager = NULL;
+        delete transactionsManager;
+        transactionsManager = NULL;
     };
     void registerUser();
     void displayAllUsers();
@@ -32,12 +35,11 @@ public:
     void changePassword();
     int isUserLoggedIn();
     int getLoggedInUserId();
-    void addTransaction();
+    void addIncome();
+    void addOutcome();
     void currentMonthBalance();
     void lastMonthBalance();
     void selectedDatesBalance();
-    //void wyszukajAdresatowPoImieniu();
-    //void wyszukajAdresatowPoNazwisku();
     void selectOptionFromMainMenu();
     void selectOptionFromUserMenu();
     char getChoice();

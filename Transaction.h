@@ -1,11 +1,11 @@
-#ifndef INCOME_H
-#define INCOME_H
+#ifndef TRANSACTION_H
+#define TRANSACTION_H
 
 #include <iostream>
 
 using namespace std;
 
-class Income
+class Transaction
 {
     int id;
     int userId;
@@ -24,8 +24,11 @@ public:
     void setDate(int newDate);
     void setItem(string newItem);
     void setAmount(double newAmount);
+    bool operator< (const Transaction &other) const {
+        return date < other.date;
+    }
 };
 
 
 
-#endif // ADRESAT_H
+#endif // TRANSACTION_H

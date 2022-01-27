@@ -28,6 +28,7 @@ public:
     static int convertStringDateYYYYMMDDFormatToIntDate(string date);
     static string convertIntDateYYYYMMDDFormatToStringDate(int date);
     static bool dateValidationStringFormatYYYYMMDD(string date);
+    static string changeFirstLetterForUpperCaseAndOthersForLowerCase(string text);
 };
 
 #endif // AUXILIARYMETHODS_H

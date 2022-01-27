@@ -14,16 +14,17 @@ void Finances::loginUser()
 {
     userManager.loginUser();
     if (userManager.isUserLoggedIn()){
-        incomesManager = new IncomesManager(FILENAME_WITH_INCOMES,userManager.getLoggedInUserId());
+        transactionsManager = new TransactionsManager(FILENAME_WITH_INCOMES,FILENAME_WITH_OUTCOMES,userManager.getLoggedInUserId());
     }
 }
 
 void Finances::logoutUser()
 {
     userManager.logoutUser();
-    incomesManager->deleteIncomes();
-    delete incomesManager;
-    incomesManager = NULL;
+    transactionsManager->deleteIncomes();
+    transactionsManager->deleteOutcomes();
+    delete transactionsManager;
+    transactionsManager = NULL;
 }
 
 void Finances::changePassword()
@@ -36,12 +37,11 @@ int Finances::getLoggedInUserId()
     return userManager.getLoggedInUserId();
 }
 
-
-void Finances::addTransaction()
+void Finances::addIncome()
 {
     if(userManager.isUserLoggedIn())
     {
-        incomesManager->addTransaction();
+        transactionsManager->addIncome();
     }
     else
     {
@@ -50,47 +50,87 @@ void Finances::addTransaction()
     }
 }
 
+void Finances::addOutcome()
+{
+    if(userManager.isUserLoggedIn())
+    {
+        transactionsManager->addOutcome();
+    }
+    else
+    {
+        cout << "Aby dodac wydatek, nalezy najpierw sie zalogowac" << endl;
+        system("pause");
+    }
+}
 
 void Finances::currentMonthBalance()
 {
-    incomesManager->currentMonthBalance();
+    transactionsManager->currentMonthBalance();
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),7);
     cout << "Bilans przychodow w biezacym miesiacu: ";
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),2);
-    cout << incomesManager->getIncomeBalance() << endl;
+    cout << transactionsManager->getIncomeBalance() << endl;
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),7);
+    cout << "Bilans wydatkow w biezacym miesiacu: ";
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),4);
+    cout << transactionsManager->getOutcomeBalance() << endl;
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),7);
+    cout << "Bilans w tym miesiacu: ";
+    if(transactionsManager->getAccountBalance() >= 0){
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),2);
+    }else{
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),4);
+    }
+    cout << transactionsManager->getAccountBalance() << endl;
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),7);
     system("pause");
 }
 
 void Finances::lastMonthBalance()
 {
-    incomesManager->lastMonthBalance();
+    transactionsManager->lastMonthBalance();
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),7);
     cout << "Bilans przychodow w poprzednim miesiacu: ";
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),2);
-    cout << incomesManager->getIncomeBalance() << endl;
+    cout << transactionsManager->getIncomeBalance() << endl;
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),7);
+    cout << "Bilans wydatkow w poprzednim miesiacu: ";
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),4);
+    cout << transactionsManager->getOutcomeBalance() << endl;
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),7);
+    cout << "Bilans w tym miesiacu: ";
+    if(transactionsManager->getAccountBalance() >= 0){
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),2);
+    }else{
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),4);
+    }
+    cout << transactionsManager->getAccountBalance() << endl;
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),7);
     system("pause");
 }
 
 void Finances::selectedDatesBalance()
 {
-    incomesManager->selectedDatesBalance();
+    transactionsManager->selectedDatesBalance();
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),7);
     cout << "Bilans przychodow w wybranym okresie: ";
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),2);
-    cout << incomesManager->getIncomeBalance() << endl;
+    cout << transactionsManager->getIncomeBalance() << endl;
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),7);
+    cout << "Bilans wydatkow w wybranym okresie: ";
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),4);
+    cout << transactionsManager->getOutcomeBalance() << endl;
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),7);
+    cout << "Bilans w tym miesiacu: ";
+    if(transactionsManager->getAccountBalance() >= 0){
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),2);
+    }else{
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),4);
+    }
+    cout << transactionsManager->getAccountBalance() << endl;
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),7);
     system("pause");
 }
-/*
-void Finances::wyszukajAdresatowPoImieniu()
-{
-    adresatMenedzer->wyszukajAdresatowPoImieniu();
-}
-
-void Finances::wyszukajAdresatowPoNazwisku()
-{
-    adresatMenedzer->wyszukajAdresatowPoNazwisku();
-}
-*/
 
 void Finances::selectOptionFromMainMenu()
 {
@@ -111,14 +151,13 @@ void Finances::selectOptionFromUserMenu()
     cout << " >>> MENU UZYTKOWNIKA <<<" << endl;
     cout << "---------------------------" << endl;
     cout << "1. Dodaj przychod" << endl;
-    cout << "2. " << endl;
+    cout << "2. Dodaj wydatek" << endl;
     cout << "3. Bilans z biezacego miesiaca" << endl;
     cout << "4. Bilans z poprzedniego miesiaca" << endl;
     cout << "5. Bilans z wybranego okresu" << endl;
-    cout << "6. " << endl;
     cout << "---------------------------" << endl;
-    cout << "7. Zmien haslo" << endl;
-    cout << "8. Wyloguj sie" << endl;
+    cout << "6. Zmien haslo" << endl;
+    cout << "7. Wyloguj sie" << endl;
     cout << "---------------------------" << endl;
     cout << "Twoj wybor: ";
     choice = AuxiliaryMethods::loadChar();

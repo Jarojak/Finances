@@ -3,7 +3,7 @@
 using namespace std;
 
 int main(){
-    Finances finances("users.xml","incomes.xml");
+    Finances finances("users.xml","incomes.xml","outcomes.xml");
 
     while (true)
     {
@@ -35,9 +35,10 @@ int main(){
             switch (finances.getChoice())
             {
             case '1':
-                finances.addTransaction();
+                finances.addIncome();
                 break;
             case '2':
+                finances.addOutcome();
                 break;
             case '3':
                 finances.currentMonthBalance();
@@ -49,11 +50,9 @@ int main(){
                 finances.selectedDatesBalance();
                 break;
             case '6':
-                break;
-            case '7':
                 finances.changePassword();
                 break;
-            case '8':
+            case '7':
                 finances.logoutUser();
                 break;
             }

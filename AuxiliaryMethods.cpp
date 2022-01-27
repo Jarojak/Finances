@@ -196,3 +196,13 @@ bool AuxiliaryMethods::dateValidationStringFormatYYYYMMDD(string date)
     if(day > days_in_month || day < 1) return 0;
     return 1;
 }
+
+string AuxiliaryMethods::changeFirstLetterForUpperCaseAndOthersForLowerCase(string text)
+{
+    if (!text.empty())
+    {
+        transform(text.begin(), text.end(), text.begin(), ::tolower);
+        text[0] = toupper(text[0]);
+    }
+    return text;
+}

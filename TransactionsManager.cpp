@@ -1,23 +1,35 @@
-#include "incomesmanager.h"
+#include "transactionsmanager.h"
 
-void IncomesManager::addTransaction()
+void TransactionsManager::addIncome()
 {
-    Income income;
+    Transaction transaction;
 
     system("cls");
-    cout << " >>> NOWA TRANSAKCJA <<<" << endl << endl;
-    income = getNewTransactionData();
+    cout << " >>> NOWA TRANSAKCJA - PRZYCHOD <<<" << endl << endl;
+    transaction = getNewTransactionData();
 
-    incomes.push_back(income);
-    fileWithIncomes.addTransactionToFile(income);
+    incomes.push_back(transaction);
+    fileWithIncomes.addTransactionToFile(transaction);
 }
 
-Income IncomesManager::getNewTransactionData()
+void TransactionsManager::addOutcome()
 {
-    Income income;
+    Transaction transaction;
 
-    income.setId(fileWithIncomes.getLastTransactionId() + 1);
-    income.setUserId(LOGGED_IN_USER_ID);
+    system("cls");
+    cout << " >>> NOWA TRANSAKCJA - WYDATEK <<<" << endl << endl;
+    transaction = getNewTransactionData();
+
+    outcomes.push_back(transaction);
+    fileWithOutcomes.addTransactionToFile(transaction);
+}
+
+Transaction TransactionsManager::getNewTransactionData()
+{
+    Transaction transaction;
+
+    transaction.setId(fileWithIncomes.getLastTransactionId() + 1);
+    transaction.setUserId(LOGGED_IN_USER_ID);
 
     time_t currentTime;
     currentTime = time(NULL);
@@ -33,7 +45,7 @@ Income IncomesManager::getNewTransactionData()
      }
     while(choice != 't' && choice != 'n');
     if(choice == 't'){
-        income.setDate(AuxiliaryMethods::convertStringDateYYYYMMDDFormatToIntDate(dateNow));
+        transaction.setDate(AuxiliaryMethods::convertStringDateYYYYMMDDFormatToIntDate(dateNow));
     }
     else if(choice == 'n'){
         string date;
@@ -43,7 +55,7 @@ Income IncomesManager::getNewTransactionData()
             date = AuxiliaryMethods::loadLine();
             dateValidation = AuxiliaryMethods::dateValidationStringFormatYYYYMMDD(date);
             if(!dateValidation) cout << "niepoprawny format daty! sprobuj ponownie" << endl;
-            else income.setDate(AuxiliaryMethods::convertStringDateYYYYMMDDFormatToIntDate(date));
+            else transaction.setDate(AuxiliaryMethods::convertStringDateYYYYMMDDFormatToIntDate(date));
         }while(!dateValidation);
     }
 
@@ -55,20 +67,25 @@ Income IncomesManager::getNewTransactionData()
         amountValid = amountValidate(stringAmount);
         if(!amountValid) cout << "podano bledna kwote! sprobuj pownownie:" << endl;
     }while(!amountValid);
-    income.setAmount(stringAmountToDouble(stringAmount));
+    transaction.setAmount(stringAmountToDouble(stringAmount));
 
     cout << "podaj opis transakcji: ";
-    income.setItem(AuxiliaryMethods::loadLine());
+    transaction.setItem(AuxiliaryMethods::loadLine());
 
-    return income;
+    return transaction;
 }
 
-void IncomesManager::deleteIncomes()
+void TransactionsManager::deleteIncomes()
 {
     incomes.clear();
 }
 
-void IncomesManager::currentMonthBalance()
+void TransactionsManager::deleteOutcomes()
+{
+    outcomes.clear();
+}
+
+void TransactionsManager::currentMonthBalance()
 {
     time_t currentTime;
     currentTime = time(NULL);
@@ -77,14 +94,15 @@ void IncomesManager::currentMonthBalance()
     currentDate = AuxiliaryMethods::convertTmDateStructureToIntDateYYYYMMDDFormat(currentTimeStruct);
 
     system("cls");
-    if (!incomes.empty())
+
+    if (!incomes.empty() || !outcomes.empty())
     {
         cout << "      >>> Bilans przychodow z biezacego miesiaca <<<" << endl;
         cout << "-----------------------------------------------" << endl;
 
         incomeBalance = 0;
         bool transactionExists = false;
-        for (vector <Income> :: iterator itr = incomes.begin(); itr != incomes.end(); itr++)
+        for (vector <Transaction> :: iterator itr = incomes.begin(); itr != incomes.end(); itr++)
         {
             if((currentDate/100) == (itr->getDate()/100)){
                 displayTransactionData(*itr);
@@ -94,15 +112,34 @@ void IncomesManager::currentMonthBalance()
         }
         if(!transactionExists) cout << endl << "brak transakcji w tym miesiacu." << endl;
         cout << endl;
+
+        cout << "      >>> Bilans wydatkow z biezacego miesiaca <<<" << endl;
+        cout << "-----------------------------------------------" << endl;
+
+        outcomeBalance = 0;
+        transactionExists = false;
+        for (vector <Transaction> :: iterator itr = outcomes.begin(); itr != outcomes.end(); itr++)
+        {
+            if((currentDate/100) == (itr->getDate()/100)){
+                displayTransactionData(*itr);
+                outcomeBalance += itr->getAmount();
+                transactionExists = true;
+            }
+        }
+        if(!transactionExists) cout << endl << "brak transakcji w tym miesiacu." << endl;
+        cout << endl;
+
     }
     else
     {
         cout << endl << "brak transakcji w tym miesiacu." << endl << endl;
     }
+
+    accountBalance = incomeBalance - outcomeBalance;
     //system("pause");
 }
 
-void IncomesManager::lastMonthBalance()
+void TransactionsManager::lastMonthBalance()
 {
     time_t currentTime;
     currentTime = time(NULL);
@@ -111,7 +148,7 @@ void IncomesManager::lastMonthBalance()
     currentDate = AuxiliaryMethods::convertTmDateStructureToIntDateYYYYMMDDFormat(currentTimeStruct);
 
     system("cls");
-    if (!incomes.empty())
+    if (!incomes.empty() || !outcomes.empty())
     {
         cout << "      >>> Bilans przychodow z poprzedniego miesiaca <<<" << endl;
         cout << "-----------------------------------------------" << endl;
@@ -124,16 +161,16 @@ void IncomesManager::lastMonthBalance()
             currentYear--;
         }
 
-        int incomeMonth = 0;
-        int incomeYear = 0;
+        int transactionMonth = 0;
+        int transactionYear = 0;
 
         incomeBalance = 0;
         bool transactionExists = false;
-        for (vector <Income> :: iterator itr = incomes.begin(); itr != incomes.end(); itr++)
+        for (vector <Transaction> :: iterator itr = incomes.begin(); itr != incomes.end(); itr++)
         {
-            incomeMonth = (itr->getDate()%10000)/100;
-            incomeYear = itr->getDate()/10000;
-            if(incomeMonth == currentMonth && incomeYear == currentYear){
+            transactionMonth = (itr->getDate()%10000)/100;
+            transactionYear = itr->getDate()/10000;
+            if(transactionMonth == currentMonth && transactionYear == currentYear){
                 displayTransactionData(*itr);
                 incomeBalance += itr->getAmount();
                 transactionExists = true;
@@ -141,15 +178,36 @@ void IncomesManager::lastMonthBalance()
         }
         if(!transactionExists) cout << endl << "brak transakcji z poprzedniego miesiaca." << endl;
         cout << endl;
+
+        cout << "      >>> Bilans wydatkow z poprzedniego miesiaca <<<" << endl;
+        cout << "-----------------------------------------------" << endl;
+
+        outcomeBalance = 0;
+        transactionExists = false;
+        for (vector <Transaction> :: iterator itr = outcomes.begin(); itr != outcomes.end(); itr++)
+        {
+            transactionMonth = (itr->getDate()%10000)/100;
+            transactionYear = itr->getDate()/10000;
+            if(transactionMonth == currentMonth && transactionYear == currentYear){
+                displayTransactionData(*itr);
+                outcomeBalance += itr->getAmount();
+                transactionExists = true;
+            }
+        }
+        if(!transactionExists) cout << endl << "brak transakcji z poprzedniego miesiaca." << endl;
+        cout << endl;
+
     }
     else
     {
         cout << endl << "brak transakcji z poprzedniego miesiaca." << endl << endl;
     }
+
+    accountBalance = incomeBalance - outcomeBalance;
     //system("pause");
 }
 
-void IncomesManager::selectedDatesBalance()
+void TransactionsManager::selectedDatesBalance()
 {
     time_t currentTime;
     currentTime = time(NULL);
@@ -157,12 +215,12 @@ void IncomesManager::selectedDatesBalance()
     currentTimeStruct = *localtime(&currentTime);
     currentDate = AuxiliaryMethods::convertTmDateStructureToIntDateYYYYMMDDFormat(currentTimeStruct);
 
-    system("cls");
-    if (!incomes.empty())
-    {
-        int beginDate;
-        int endDate;
+    int beginDate;
+    int endDate;
 
+    system("cls");
+    if (!incomes.empty() || !outcomes.empty())
+    {
         string date;
         bool dateValidation = false;
         cout << "wpisz date, (od) w formacie YYYY-MM-DD" << endl;
@@ -196,11 +254,31 @@ void IncomesManager::selectedDatesBalance()
 
         incomeBalance = 0;
         bool transactionExists = false;
-        for (vector <Income> :: iterator itr = incomes.begin(); itr != incomes.end(); itr++)
+        for (vector <Transaction> :: iterator itr = incomes.begin(); itr != incomes.end(); itr++)
         {
             if(itr->getDate() >= beginDate && itr->getDate() <= endDate){
                 displayTransactionData(*itr);
                 incomeBalance += itr->getAmount();
+                transactionExists = true;
+            }
+        }
+        if(!transactionExists) cout << endl << "brak transakcji w danym okresie czasu." << endl;
+        cout << endl;
+
+        cout << ">>> Bilans wydatkow w okresie od: "
+            << AuxiliaryMethods::convertIntDateYYYYMMDDFormatToStringDate(beginDate)
+            << " do: "
+            << AuxiliaryMethods::convertIntDateYYYYMMDDFormatToStringDate(endDate)
+            << " <<<" << endl;
+        cout << "----------------------------------------------------------------" << endl;
+
+        outcomeBalance = 0;
+        transactionExists = false;
+        for (vector <Transaction> :: iterator itr = outcomes.begin(); itr != outcomes.end(); itr++)
+        {
+            if(itr->getDate() >= beginDate && itr->getDate() <= endDate){
+                displayTransactionData(*itr);
+                outcomeBalance += itr->getAmount();
                 transactionExists = true;
             }
         }
@@ -211,18 +289,20 @@ void IncomesManager::selectedDatesBalance()
     {
         cout << endl << "brak transakcji w danym okresie czasu." << endl << endl;
     }
+
+    accountBalance = incomeBalance - outcomeBalance;
     //system("pause");
 }
 
-void IncomesManager::displayTransactionData(Income income)
+void TransactionsManager::displayTransactionData(Transaction transaction)
 {
     cout << endl;
-    cout << "Data:      " << AuxiliaryMethods::convertIntDateYYYYMMDDFormatToStringDate(income.getDate()) << endl;
-    cout << "Kwota:     " << fixed << setprecision(2) << income.getAmount() << endl;
-    cout << "Opis:      " << income.getItem() << endl;
+    cout << "Data:      " << AuxiliaryMethods::convertIntDateYYYYMMDDFormatToStringDate(transaction.getDate()) << endl;
+    cout << "Kwota:     " << fixed << setprecision(2) << transaction.getAmount() << endl;
+    cout << "Opis:      " << transaction.getItem() << endl;
 }
 
-bool IncomesManager::amountValidate(string amount){
+bool TransactionsManager::amountValidate(string amount){
     if(amount.length() > 10) return false;
     if((amount[0]=='0' && amount[1]=='0') || amount[0] =='.' || amount[0] ==',') return false; //two zeros, dot, coma at beginning
     int dotsCnt = 0;
@@ -238,7 +318,7 @@ bool IncomesManager::amountValidate(string amount){
     return true;
 }
 
-double IncomesManager::stringAmountToDouble(string amount){
+double TransactionsManager::stringAmountToDouble(string amount){
     double val = 0.00;
     double dec = 0.01;
     int cnt = 0;
@@ -252,7 +332,17 @@ double IncomesManager::stringAmountToDouble(string amount){
     return val;
 }
 
-double IncomesManager::getIncomeBalance()
+double TransactionsManager::getIncomeBalance()
 {
     return incomeBalance;
+}
+
+double TransactionsManager::getOutcomeBalance()
+{
+    return outcomeBalance;
+}
+
+double TransactionsManager::getAccountBalance()
+{
+    return accountBalance;
 }
